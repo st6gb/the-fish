@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "target": "esnext",
+    "module": "commonjs",
     "allowJs": true,
-    "target": "es5"
+    "noEmit": true, 
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["./src/**/*"]
+  "include": ["src"]
 }

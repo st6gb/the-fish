@@ -1,18 +1,43 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
-const webpack = require('webpack'); //to access built-in plugins
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
   mode: 'development',
-  devtool: 'inline-source-map',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'webpack.bundle.js'
+  entry: {
+    fish: './src/index.ts'
+  },
+  devtool: 'source-map', // Generate separate source map files
+  devServer: {
+    contentBase: './dist',
+    overlay: true // Show errors in overlay on the website
   },
   module: {
     rules: [
-      { test: /\.ts$/, use: 'ts-loader' },
+      {
+        enforce: 'pre',
+        test: /\.(js|ts)$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader',
+        options: {
+          emitError: true,
+          emitWarning: true,
+          failOnError: true
+        }
+      },
+      {
+        test: /\.(js|ts)$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader'
+        ]
+      },
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: [
@@ -26,24 +51,25 @@ module.exports = {
       {
         test: /\.s[ac]ss$/i,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader',
           'sass-loader',
         ],
       },
-      {
-        test: /\.css$/i,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
-      },
     ]
   },
-  devServer: {
-    contentBase: './dist',
-  },
   plugins: [
-    new HtmlWebpackPlugin({template: './index.html'})
-  ]
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new MiniCssExtractPlugin()
+  ],
+  resolve: {
+    extensions: ['.js', '.ts']
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
 };
