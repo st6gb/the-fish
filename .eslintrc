@@ -10,7 +10,8 @@
   },
   "env": {
     "browser": true,
-    "jasmine": true
+    "jasmine": true,
+    "es6": true
   },
   "rules": {
     "require-jsdoc": "off",
